@@ -31,3 +31,12 @@ Proje, React teknolojileri ve TypeScript kullanılarak Tailwind ile geliştirilm
 - **React Router**
 - **Tailwind CSS**
 - **React Icons**
+
+
+## Projeyi Kurma Adımları
+
+**Projeyi Klonlayın**:
+   git clone https://github.com/ismailkiziltas/hepsiburada-react-clone.git
+   cd hepsiburada-react-clone
+   npm install
+   npm start
