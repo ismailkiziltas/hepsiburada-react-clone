@@ -1,54 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
+import productsData from '../../data/product.json';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import { Product } from '../../types';
-import productsData from '../../data/product.json';
 
-const Home: React.FC = () => {
-  const products: Product[] = productsData as Product[];
+const products: Product[] = productsData as Product[];
+
+interface HomeProps {
+  searchQuery: string;
+}
+
+const Home: React.FC<HomeProps> = ({ searchQuery }) => {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const categories = Array.from(new Set(products.map((product) => product.category)));
+
+  const filteredProducts = products.filter((product) => {
+    const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-gradient-to-r from-hepsi-orange to-orange-600 text-white py-12">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold mb-4">
-            Hepsiburada'da Her Şey Var!
-          </h1>
-          <p className="text-xl">
-            Milyonlarca ürün, binlerce marka, hızlı teslimat
-          </p>
-        </div>
+    <div className="container mx-auto px-4 py-8">
+      {/* Kategori Butonları */}
+      <div className="flex gap-4 mb-8">
+        <button
+          onClick={() => setSelectedCategory(null)}
+          className={`px-4 py-2 rounded-md font-medium ${!selectedCategory ? 'bg-hepsi-orange text-white' : 'bg-gray-200 text-gray-700'}`}
+        >
+          Tümü
+        </button>
+        {categories.map((category) => (
+          <button
+            key={category}
+            onClick={() => setSelectedCategory(category)}
+            className={`px-4 py-2 rounded-md font-medium ${selectedCategory === category ? 'bg-hepsi-orange text-white' : 'bg-gray-200 text-gray-700'}`}
+          >
+            {category}
+          </button>
+        ))}
       </div>
 
-      <div className="container mx-auto px-4 py-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Kategoriler</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-12">
-          {['Elektronik', 'Moda', 'Ev & Yaşam', 'Spor', 'Kitap', 'Oyuncak'].map((category) => (
-            <div
-              key={category}
-              className="bg-white p-4 rounded-lg shadow-md text-center cursor-pointer hover:shadow-lg transition-shadow"
-            >
-              <div className="text-3xl mb-2">📱</div>
-              <p className="font-medium text-gray-700">{category}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Öne Çıkan Ürünler</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-8 rounded-lg text-center mb-8">
-          <h3 className="text-2xl font-bold mb-2">Özel Kampanya!</h3>
-          <p className="text-lg">Seçili ürünlerde %50'ye varan indirimler</p>
-          <button className="mt-4 bg-white text-purple-600 px-6 py-2 rounded-md font-semibold hover:bg-gray-100 transition-colors">
-            Kampanyayı Gör
-          </button>
-        </div>
+      {/* Ürün Listesi */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredProducts.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
       </div>
     </div>
   );

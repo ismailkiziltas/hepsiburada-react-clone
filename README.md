@@ -21,6 +21,9 @@ Proje, React teknolojileri ve TypeScript kullanılarak Tailwind ile geliştirilm
 ### Sepet Sayfası
 ![Sepet Sayfası](public/images/cart.png)
 
+### Detay Sayfası
+![Sepet Sayfası](public/images/detail.png)
+
 ---
 
 ## 🛠️ Kullanılan Teknolojiler

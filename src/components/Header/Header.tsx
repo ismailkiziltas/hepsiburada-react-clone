@@ -1,10 +1,32 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { RootState } from '../../store/store';
+import { login, logout } from '../../store/slice/userSlice';
+import LoginModal from '../LoginModal/LoginModal';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onSearch: (query: string) => void;
+  darkMode: boolean;
+  setDarkMode: (value: boolean) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onSearch, darkMode, setDarkMode }) => {
   const { totalItems } = useSelector((state: RootState) => state.cart);
+
+  const user = useSelector((state: RootState) => state.user);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const dispatch = useDispatch();
+
+  const [nameInput, setNameInput] = useState('');
+
+  const handleLogin = (name: string) => {
+    dispatch(login(name));
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
 
   return (
     <header className="bg-white shadow-md">
@@ -34,6 +56,7 @@ const Header: React.FC = () => {
               <input
                 type="text"
                 placeholder="Ne aramıştınız?"
+                onChange={(e) => onSearch(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-hepsi-orange"
               />
               <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl">
@@ -45,12 +68,29 @@ const Header: React.FC = () => {
           <div className="flex items-center space-x-6">
             <div className="flex items-center space-x-2 cursor-pointer hover:text-hepsi-orange">
               <span className="text-xl">👤</span>
-              <span className="hidden md:block">Giriş Yap</span>
+              {user.isLoggedIn ? (
+                <>
+                  <span className="text-gray-700">Merhaba, {user.name}!</span>
+                  <button
+                    onClick={handleLogout}
+                    className="bg-red-500 text-white px-4 py-2 rounded-md"
+                  >
+                    Çıkış Yap
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="bg-hepsi-orange text-white px-4 py-2 rounded-md"
+                >
+                  Giriş Yap
+                </button>
+              )}
             </div>
 
             <div className="flex items-center space-x-2 cursor-pointer hover:text-hepsi-orange">
               <span className="text-xl">❤️</span>
-              <span className="hidden md:block">Favoriler</span>
+              <Link to="/favorites" className="text-gray-700 hover:text-hepsi-orange">Favoriler</Link>
             </div>
 
             <Link to="/cart" className="flex items-center space-x-2 cursor-pointer hover:text-hepsi-orange relative">
@@ -64,6 +104,12 @@ const Header: React.FC = () => {
               </div>
               <span className="hidden md:block">Sepetim</span>
             </Link>
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              className="px-4 py-2 rounded-md font-medium bg-gray-200 dark:bg-gray-700 dark:text-white"
+            >
+              {darkMode ? '☀️' : '🌙'}
+            </button>
           </div>
         </div>
       </div>
@@ -89,6 +135,13 @@ const Header: React.FC = () => {
           </nav>
         </div>
       </div>
+
+      {/* Giriş Modalı */}
+      <LoginModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onLogin={handleLogin}
+      />
     </header>
   );
 };
