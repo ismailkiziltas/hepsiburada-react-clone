@@ -4,6 +4,8 @@ Bu proje, **Hepsiburada** benzeri bir e-ticaret uygulamasıdır.
 Kullanıcılar ürünleri görebilir, sepete ekleyebilir ve sepetlerini yönetebilir. 
 Proje, React teknolojileri ve TypeScript kullanılarak Tailwind ile geliştirilmiştir.
 
+---
+
 ## 🚀 Özellikler
 
 - **Ürün Listeleme
